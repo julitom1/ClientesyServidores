@@ -18,6 +18,7 @@ import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -37,9 +38,9 @@ public class HttpServer {
 	}
 	private HttpServer() {
 		content.put("css","text/css");
-		content.put("js","application/javascript");
+		content.put("js","text/javascript");
 		content.put("jpeg","image/jpeg");
-		content.put("jpg","image/jpeg");
+		content.put("jpg","image/jpg");
 		content.put("doc","application/msword");
 		content.put("gif","image/gif");
 		content.put("htm","text/html");
@@ -74,14 +75,12 @@ public class HttpServer {
 	}
 	
 	
-	public String getResource(URI resourceURL){
+	public void resourceText(String path,String extension,PrintWriter out){
 		
 		BufferedReader br = null;
-		String uri=resourceURL.getPath().split("/")[1];
 		//String uri = Paths.get("public_html" + resourceURL.getPath());
-		File archivo = new File (uri);
-		
-		String rta=httpOk("html");
+		File archivo = new File (path+"."+extension);
+		String rta=httpOk(extension);
 		
 		try {
 			FileReader fr = new FileReader (archivo);
@@ -99,28 +98,17 @@ public class HttpServer {
 			// TODO Auto-generated catch block
 			rta+="ERRORssssss";
 		}
-		System.out.println(resourceURL.getPath());
-		//return computeDefaultResponse();
-		
-		return rta;
+		out.println(rta);
 	}
-	public void getResourceImage(String path,String extension,OutputStream outStream) {
-		System.out.println(" ======================================= 6t");
+	public void resourceImage(String path,String extension,OutputStream outStream) throws IOException {
+		
 		BufferedImage image;
-		try {
-			
-			image = ImageIO.read(new File(path+"."+extension));
-			ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-	 		DataOutputStream dataOutputStream= new DataOutputStream(outStream); 
-			ImageIO.write(image,extension, byteArrayOutputStream);
-			dataOutputStream.writeBytes(path);
-			dataOutputStream.write(byteArrayOutputStream.toByteArray());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
+		image = ImageIO.read(new File(path+"."+extension));
+		ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+	 	DataOutputStream dataOutputStream= new DataOutputStream(outStream); 
+		ImageIO.write(image,extension, byteArrayOutputStream);
+		dataOutputStream.writeBytes(httpOk(extension));
+		dataOutputStream.write(byteArrayOutputStream.toByteArray());	
 	}
 	public void serveConnection(Socket clientSocket) throws IOException, URISyntaxException {
 		
@@ -139,21 +127,29 @@ public class HttpServer {
 			}
 		}
 		String uriStr="";
+		String uri="";
 		try {
 			
 			uriStr=request.get(0).split(" ")[1];
 		
 			URI resourceURI = new URI(uriStr);
 			
-			String uri=resourceURI.getPath().split("/")[1];
-			String[] ur=uri.split(".");
-			System.out.println(uri + "=============================================================");
-			getResourceImage(ur[0],ur[1],outStream);
+			uri=resourceURI.getPath().split("/")[1];
+			String[] ur=uri.split("\\.");
 			
-			//out.println(rta);
+			if(content.get(ur[1]).split("/")[0].equals("image")) {
+				resourceImage(ur[0],ur[1],outStream);
+			}else {
+				
+				resourceText(ur[0],ur[1],out);
+				
+			}
+			
+			
 		}catch(Exception e) {
+			resourceText("not_found_404","html",out);
 		}
-
+			
 		out.close();
 		in.close();
 		clientSocket.close();
@@ -174,9 +170,6 @@ public class HttpServer {
 				+ "</body>"
 				+ "</html>";
 	}
-	public static void main(String[] args) throws IOException, URISyntaxException {
-		HttpServer httpServer=getInstance();
-		httpServer.start();
-	}
+
 
 }
