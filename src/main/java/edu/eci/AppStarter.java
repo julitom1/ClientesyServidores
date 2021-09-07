@@ -1,4 +1,4 @@
-package edu.eci.webapp;
+package edu.eci;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
