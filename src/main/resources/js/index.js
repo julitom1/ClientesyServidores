@@ -1,4 +1,4 @@
-var IMAGENES = ['1.jpg','2.jpg','3.png'];
+var IMAGENES = ['1.jpg','demonio.jpg','game_over.png','muerta.jpg'];
 var posicionActual = 0;
 function retroceder(){
 	posicionActual -= 1;
@@ -28,7 +28,7 @@ $(document).ready(function(){
 		avanzar();
 	});
 	$("#retroceder").click(function(){
-		retorceder();
+		retroceder();
 	});
 });
 	

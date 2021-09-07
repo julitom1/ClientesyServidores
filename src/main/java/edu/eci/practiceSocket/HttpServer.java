@@ -75,14 +75,14 @@ public class HttpServer {
 	}
 	
 	
-	public void resourceText(String path,String extension,PrintWriter out){
+	public void resourceText(String path,String extension,PrintWriter out) throws IOException{
 		
 		BufferedReader br = null;
 		//String uri = Paths.get("public_html" + resourceURL.getPath());
-		File archivo = new File (path+"."+extension);
+		File archivo = new File ("src/main/resources/"+extension+"/"+path+"."+extension);
 		String rta=httpOk(extension);
 		
-		try {
+			
 			FileReader fr = new FileReader (archivo);
 			br = new BufferedReader(fr);
 	         // Lectura del fichero
@@ -90,20 +90,13 @@ public class HttpServer {
 	         
 	         while((linea=br.readLine())!=null)
 	        	 rta=rta+linea;
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			
-			rta+="ERRORrrrrr";
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			rta+="ERRORssssss";
-		}
+		
 		out.println(rta);
 	}
 	public void resourceImage(String path,String extension,OutputStream outStream) throws IOException {
 		
 		BufferedImage image;
-		image = ImageIO.read(new File(path+"."+extension));
+		image = ImageIO.read(new File("src/main/resources/image/"+path+"."+extension));
 		ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
 	 	DataOutputStream dataOutputStream= new DataOutputStream(outStream); 
 		ImageIO.write(image,extension, byteArrayOutputStream);
