@@ -13,6 +13,10 @@ Este servidor web tiene la capacidad de resolver diferentes extensiones como .ht
 * [css](https://clienteservidor1.herokuapp.com/color_rojo.css) 
 * [Not found](https://clienteservidor1.herokuapp.com/s.css)
 
+### Diseño y Evaluacion
+
+Los diseños de la arquitectura y la evaluacion de la aplicación los encontraran [aqui](https://github.com/julitom1/ClientesyServidores/blob/main/src/main/resources/articulo.pdf)
+
 ### Autor
 
 * Yarit Yajanny Villalobos Jjimenez
